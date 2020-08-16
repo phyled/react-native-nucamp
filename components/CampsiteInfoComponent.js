@@ -3,7 +3,7 @@ import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet } from 'rea
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
@@ -14,7 +14,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    postFavorite: campsiteId => (postFavorite(campsiteId))
+    postFavorite: campsiteId => (postFavorite(campsiteId)),
+    postComment: comment => postComment(comment)
 };
 
 function RenderCampsite(props) {  
@@ -101,7 +102,14 @@ class CampsiteInfo extends Component {
     }
 
     handleComment(campsiteId) {
-        console.log(JSON.stringify(this.state));
+        const comment = {
+            campsiteId,
+            rating      : this.state.rating,
+            author      : this.state.author,
+            text        : this.state.text,
+            date        : new Date().toISOString()
+        }
+        this.props.postComment(comment);
         this.toggleModal();
     }
 
@@ -165,7 +173,7 @@ class CampsiteInfo extends Component {
                             onChangeText={(event)=>this.onChangeHandler({comment:event})}
                             value={this.state.comment}
                         />
-                        <View>
+                        <View style={{margin: 10}}>
                             <Button
                                 title= "Submit"
                                 color= '#5637DD'
@@ -176,8 +184,7 @@ class CampsiteInfo extends Component {
                                 }}
                             />
                         </View>
-                        
-                        <View>
+                        <View style={{margin: 10}}>
                             <Button
                                 onPress={() => {
                                     this.toggleModal();
