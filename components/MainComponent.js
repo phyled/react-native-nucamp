@@ -320,8 +320,11 @@ class Main extends Component {
         this.props.fetchComments();
         this.props.fetchPromotions();
         this.props.fetchPartners();
+        this.showNetInfo();
+    }
 
-        NetInfo.fetch().then(connectionInfo => {
+    showNetInfo = async () => {
+        const netInfo = await (connectionInfo => {
             (Platform.OS === 'ios') ?
                 Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
                 : ToastAndroid.show('Initial Network Connectivity Type: ' +
